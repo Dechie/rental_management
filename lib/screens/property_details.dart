@@ -24,11 +24,13 @@ class _PropertyDetailsState extends State<PropertyDetails> {
   Widget build(BuildContext context) {
     final postedDate = getDateFromDateTimeInSpecificFormat(
         dateFormat, widget.rentModel.updatedAt ?? "yyyy-MM-dd");
-    return CustomScrollView(
-      slivers: [
-        _buildSliverAppBar(),
-        _buildSliverListBody(postedDate),
-      ],
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          _buildSliverAppBar(),
+          _buildSliverListBody(postedDate),
+        ],
+      ),
     );
   }
 
@@ -40,72 +42,49 @@ class _PropertyDetailsState extends State<PropertyDetails> {
     );
   }
 
-  Widget _buildPropertyDetails() {
+  List<Widget> _buildPropertyDetails() {
     var modell = widget.rentModel;
-    Row subWidget = const Row();
 
-    switch (widget.rentModel.propertyType) {
-      case PropertyType.house:
-        subWidget = Row(
-          children: [
-            _showPieceOfInfo(
-              Icons.hotel,
-              "${modell.details?['bedrooms'] ?? 0} Bedrooms",
+    List<Widget> subWidgets = modell.details!.entries
+        .map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.key,
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "${entry.value}",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            _showPieceOfInfo(
-              Icons.event_seat,
-              "${modell.details?['bathrooms'] ?? 0} Bathrooms",
-            ),
-            _showPieceOfInfo(
-              Icons.burst_mode,
-              "${modell.details?['balconies'] ?? 0} Balconies",
-            ),
-          ],
-        );
-        break;
-      case PropertyType.car:
-        subWidget = Row(
-          children: [
-            _showPieceOfInfo(
-              Icons.cabin,
-              "${modell.details?['model'] ?? 0} Bedrooms",
-            ),
-            _showPieceOfInfo(
-              Icons.car_crash,
-              "${modell.details?['mileage'] ?? 0} Bathrooms",
-            ),
-            _showPieceOfInfo(
-              Icons.car_rental,
-              "${modell.details?['fuel_capacity'] ?? 0} Balconies",
-            ),
-          ],
-        );
-        break;
-      case PropertyType.garment:
-        subWidget = Row(
-          children: [
-            _showPieceOfInfo(
-              Icons.cabin,
-              modell.details?['fabric_type'],
-            ),
-            _showPieceOfInfo(
-              Icons.car_crash,
-              modell.details?['male_or_female'],
-            ),
-            _showPieceOfInfo(
-              Icons.car_rental,
-              modell.details?['fabric_type'],
-            ),
-          ],
-        );
-      default:
-        break;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: subWidget,
-    );
+          ),
+        )
+        .toList();
+    // return Padding(
+    //   //   padding: const EdgeInsets.symmetric(vertical: 10),
+    //   child: SizedBox(
+    //     height: MediaQuery.of(context).size.width * .45,
+    //     child: ListView(children: subWidgets),
+    //   ),
+    // );
+    return subWidgets;
   }
 
   Widget _buildSliverAppBar() {
@@ -196,7 +175,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
             ),
           ),
         ),
-        _buildPropertyDetails(),
+        ..._buildPropertyDetails(),
         _propertyAddressView("Region", widget.rentModel.region!),
         _propertyAddressView("City", widget.rentModel.city!),
         _propertyAddressView("Subcity", widget.rentModel.subcity!),

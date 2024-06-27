@@ -28,7 +28,12 @@ class _PropertyListingState extends State<PropertyListing> {
           : _buildPropertyList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, PropertyPost.routeName);
+          try {
+            Navigator.pushNamed(context, PropertyPost.routeName);
+          } catch (e) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(e.toString())));
+          }
         },
         child: const Icon(
           Icons.add,
@@ -221,11 +226,13 @@ class _PropertyListingState extends State<PropertyListing> {
         return GestureDetector(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PropertyDetails(
-                          rentModel: rentModel,
-                        )));
+              context,
+              MaterialPageRoute(
+                builder: (context) => PropertyDetails(
+                  rentModel: rentModel,
+                ),
+              ),
+            );
           },
           child: Card(
             margin: const EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
@@ -239,8 +246,8 @@ class _PropertyListingState extends State<PropertyListing> {
                 children: <Widget>[
                   ClipRRect(
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      bottomLeft: Radius.circular(5.0),
+                      topLeft: Radius.circular(10.0),
+                      bottomLeft: Radius.circular(10.0),
                     ),
                     child: _buildImage(rentModel),
                   ),
