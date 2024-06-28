@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-//import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rental_management/models/dummy_data.dart';
 
 import '../models/property_model.dart';
 import '../utils/colors.dart';
@@ -13,32 +11,34 @@ import '../utils/method_utils.dart';
 
 class PropertyPost extends StatefulWidget {
   static const String routeName = '/property-post';
-  PropertyModel? rentModel;
-  PropertyPost({super.key});
+  const PropertyPost({super.key});
 
   @override
   State<PropertyPost> createState() => _PropertyPostState();
 }
 
 class _PropertyPostState extends State<PropertyPost> {
+  PropertyModel rentModel = PropertyModel();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  TextEditingController addressController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController regionController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController bedroomController = TextEditingController();
-  TextEditingController bathroomController = TextEditingController();
-  TextEditingController balconyController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController contactController = TextEditingController();
+  String _subcity = "",
+      _city = "",
+      _region = "",
+      _description = "",
+      _contact = "";
+  double _price = 0.0;
 
   int selected = 0;
-  List<String> _imageFilesList = [];
+  final List<String> _imageFilesList = [];
   var isUploadingPost = false;
   var isEditInitialized = true;
+
+  final List<TextEditingController> _detailControllers = [];
+  //final Map<int, String> _detailTextValues = {};
+  final Map<String, String> _detailTextValues = {};
+  final List<Map<String, TextEditingController>> _dynamicFields = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,29 +51,51 @@ class _PropertyPostState extends State<PropertyPost> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _buildLabel("PROPERTY TYPE"),
-                    _buildPropertyTypesWidget(),
-                    _buildLabel("PROPERTY PHOTOS"),
-                    _buildPropertyPhotosWidget(),
-                    _buildLabel("PROPERTY ADDRESS"),
-                    _buildPropertyLocationWidget(),
-                    _buildLabel("PRICE"),
-                    _buildPriceWidget(),
-                    _buildLabel("PROPERTY DETAILS"),
-                    _buildPropertyDetailsWidget(),
-                    _buildLabel("CONTACT DETAILS"),
-                    _buildContactDetailsWidget(),
-                    _buildLabel("OTHER DETAILS"),
-                    _buildOtherDetailsWidget(),
+            child: Form(
+              key: _formKey,
+              child: Expanded(
+                child: ListView(
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildLabel("PROPERTY TYPE"),
+                        _buildPropertyTypesWidget(),
+                        _buildLabel("PROPERTY PHOTOS"),
+                        _buildPropertyPhotosWidget(),
+                        _buildLabel("PROPERTY ADDRESS"),
+                        _buildPropertyLocationWidget(),
+                        _buildLabel("PRICE"),
+                        _buildPriceWidget(),
+                        //_buildLabel("PROPERTY DETAILS"),
+                        //_buildPropertyDetailsWidget(),
+                        _buildLabel("CONTACT DETAILS"),
+                        _buildContactDetailsWidget(),
+                        _buildLabel("OTHER DETAILS"),
+                        _buildDescription(),
+                        _buildLabel("OTHER DETAILS"),
+                      ],
+                    ),
+                    SizedBox(height: 300, child: _buildOtherDetails()),
+                    GestureDetector(
+                      onTap: () {
+                        _addNewTextField();
+                      },
+                      child: const SizedBox(
+                        width: double.infinity,
+                        height: 30,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                          ),
+                          child: Center(
+                            child: Text("Add New Field"),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -86,29 +108,17 @@ class _PropertyPostState extends State<PropertyPost> {
   }
 
   @override
-  void didChangeDependencies() {
-    if (widget.rentModel != null) {
-      if (isEditInitialized) {
-        cityController.text = widget.rentModel?.city ?? "";
-        regionController.text = widget.rentModel?.region ?? "";
-        priceController.text = widget.rentModel?.price ?? "";
-        descriptionController.text = widget.rentModel?.description ?? "";
-        contactController.text = widget.rentModel?.contact ?? "";
-        selected = widget.rentModel?.propertyType.index ?? 0;
-
-        if (widget.rentModel?.images != null &&
-            (widget.rentModel?.images?.length ?? 0) > 0) {
-          _imageFilesList = widget.rentModel!.images ?? [];
-
-          print("_imageFilesList : ${_imageFilesList.length}");
-          print("_imageFilesList : $_imageFilesList");
-        }
-
-        isEditInitialized = false;
-      }
+  void dispose() {
+    for (var field in _dynamicFields) {
+      field['key']!.dispose();
+      field['value']!.dispose();
     }
+    super.dispose();
+  }
 
-    super.didChangeDependencies();
+  @override
+  void initState() {
+    super.initState();
   }
 
   Future<List<String>> uploadImage(List<String> imageFiles) async {
@@ -121,9 +131,8 @@ class _PropertyPostState extends State<PropertyPost> {
         continue;
       }
       final firebaseStorageRef = FirebaseStorage.instance
-
-      .ref()
-      .child("images/sell/${DateTime.now().toIso8601String()}");
+          .ref()
+          .child("images/sell/${DateTime.now().toIso8601String()}");
 
       final uploadTask = firebaseStorageRef.putFile(File(imageFiles[i]));
       //
@@ -136,6 +145,24 @@ class _PropertyPostState extends State<PropertyPost> {
     return filePaths;
   }
 
+  void _addNewTextField() {
+    final keyController = TextEditingController();
+    final valueController = TextEditingController();
+    setState(() {
+      _dynamicFields.add({
+        'key': keyController,
+        'value': valueController,
+      });
+    });
+
+    valueController.addListener(() {
+      final key = keyController.text;
+      if (key.isNotEmpty) {
+        _detailTextValues[key] = valueController.text;
+      }
+    });
+  }
+
   Widget _buildContactDetailsWidget() {
     return Container(
       color: Colors.white,
@@ -144,19 +171,45 @@ class _PropertyPostState extends State<PropertyPost> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: TextFormField(
-          validator: (String? contact) {
-            if (contact?.isEmpty ?? false) {
+          validator: (String? value) {
+            if (value == null || value.isEmpty) {
               return "Contact field is required!!";
             }
             return null;
           },
+          onSaved: (String? value) {
+            _contact = value!;
+          },
           keyboardType: TextInputType.number,
           maxLength: 10,
-          controller: contactController,
           style: const TextStyle(color: Colors.black),
           decoration: const InputDecoration(
             counterText: "",
             labelText: "Contact",
+            labelStyle: TextStyle(color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDescription() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      margin: const EdgeInsets.only(top: 10.0),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: TextFormField(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "description is required!";
+            }
+            return null;
+          },
+          style: const TextStyle(color: Colors.black),
+          decoration: const InputDecoration(
+            labelText: "Additional Property Description",
             labelStyle: TextStyle(color: Colors.grey),
           ),
         ),
@@ -175,19 +228,58 @@ class _PropertyPostState extends State<PropertyPost> {
     );
   }
 
-  Widget _buildOtherDetailsWidget() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      margin: const EdgeInsets.only(top: 10.0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: TextFormField(
-          controller: descriptionController,
-          style: const TextStyle(color: Colors.black),
-          decoration: const InputDecoration(
-            labelText: "Additional Property Description",
-            labelStyle: TextStyle(color: Colors.grey),
+  Widget _buildOtherDetails() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: _dynamicFields.length,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _dynamicFields[index]['key']!,
+                decoration: InputDecoration(
+                  labelText: "Detail Title ${index + 1}",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "please enter text";
+                  }
+                  return null;
+                },
+                onSaved: (input) {
+                  if (input!.isNotEmpty) {
+                    _detailTextValues[input] =
+                        _dynamicFields[index]['value']!.text;
+                  }
+                },
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: _dynamicFields[index]['value']!,
+                decoration: InputDecoration(
+                  labelText: "Detail Field ${index + 1}",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "please enter text";
+                  }
+                  return null;
+                },
+                onSaved: (input) {
+                  final key = _dynamicFields[index]['key']!.text;
+                  if (key.isNotEmpty) {
+                    _detailTextValues[key] = input!;
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -203,13 +295,15 @@ class _PropertyPostState extends State<PropertyPost> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: TextFormField(
           validator: (String? price) {
-            if (price?.isEmpty ?? false) {
+            if (price == null || price.isEmpty) {
               return "Price field is required!!";
             }
             return null;
           },
+          onSaved: (value) {
+            _price = double.tryParse(value!)!;
+          },
           keyboardType: TextInputType.number,
-          controller: priceController,
           style: const TextStyle(color: Colors.black),
           decoration: const InputDecoration(
             labelText: "Price",
@@ -220,62 +314,62 @@ class _PropertyPostState extends State<PropertyPost> {
     );
   }
 
-  Widget _buildPropertyDetailsWidget() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      margin: const EdgeInsets.only(top: 10.0),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: TextFormField(
-              validator: (String? bedrooms) {
-                if (bedrooms?.isEmpty ?? false) {
-                  return "Bedroom field is required!!";
-                }
-                return null;
-              },
-              controller: bedroomController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                labelText: "BedRoom(s)",
-                labelStyle: TextStyle(color: Colors.grey),
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: TextFormField(
-              controller: bathroomController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                labelText: "BathRoom(s)",
-                labelStyle: TextStyle(color: Colors.grey),
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: TextFormField(
-              controller: balconyController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                labelText: "No. of Balconies",
-                labelStyle: TextStyle(color: Colors.grey),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildPropertyDetailsWidget() {
+  //   return Container(
+  //     color: Colors.white,
+  //     padding: const EdgeInsets.symmetric(vertical: 10.0),
+  //     margin: const EdgeInsets.only(top: 10.0),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Padding(
+  //           padding:
+  //               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+  //           child: TextFormField(
+  //             validator: (String? bedrooms) {
+  //               if (bedrooms?.isEmpty ?? false) {
+  //                 return "Bedroom field is required!!";
+  //               }
+  //               return null;
+  //             },
+  //             controller: bedroomController,
+  //             keyboardType: TextInputType.number,
+  //             style: const TextStyle(color: Colors.black),
+  //             decoration: const InputDecoration(
+  //               labelText: "BedRoom(s)",
+  //               labelStyle: TextStyle(color: Colors.grey),
+  //             ),
+  //           ),
+  //         ),
+  //         Padding(
+  //           padding:
+  //               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+  //           child: TextFormField(
+  //             controller: bathroomController,
+  //             keyboardType: TextInputType.number,
+  //             style: const TextStyle(color: Colors.black),
+  //             decoration: const InputDecoration(
+  //               labelText: "BathRoom(s)",
+  //               labelStyle: TextStyle(color: Colors.grey),
+  //             ),
+  //           ),
+  //         ),
+  //         Padding(
+  //           padding:
+  //               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+  //           child: TextFormField(
+  //             controller: balconyController,
+  //             keyboardType: TextInputType.number,
+  //             style: const TextStyle(color: Colors.black),
+  //             decoration: const InputDecoration(
+  //               labelText: "No. of Balconies",
+  //               labelStyle: TextStyle(color: Colors.grey),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildPropertyLocationWidget() {
     return Container(
@@ -284,88 +378,74 @@ class _PropertyPostState extends State<PropertyPost> {
       margin: const EdgeInsets.only(top: 10.0),
       child: Column(
         children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              _getLocation();
-            },
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0, right: 10.0),
-                  child: Icon(
-                    Icons.my_location,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 20.0),
-                  child: Text("Detect Property Location"),
-                ),
-              ],
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () {
+          //     _getLocation();
+          //   },
+          //   child: Row(
+          //     children: <Widget>[
+          //       Padding(
+          //         padding: const EdgeInsets.only(left: 20.0, right: 10.0),
+          //         child: Icon(
+          //           Icons.my_location,
+          //           color: Theme.of(context).primaryColor,
+          //         ),
+          //       ),
+          //       const Padding(
+          //         padding: EdgeInsets.only(left: 10.0, right: 20.0),
+          //         child: Text("Detect Property Location"),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
             child: TextFormField(
-              controller: addressController,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                labelText: "Address",
-                labelStyle: TextStyle(color: Colors.grey),
-              ),
-              validator: (String? address) {
-                if (address?.isEmpty ?? false) {
-                  return "Address field is required!!";
-                }
-                return null;
-              },
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: TextFormField(
-              controller: cityController,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                labelText: "City",
-                labelStyle: TextStyle(color: Colors.grey),
-              ),
-              validator: (String? city) {
-                if (city?.isEmpty ?? false) {
-                  return "City field is required!!";
-                }
-                return null;
-              },
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: TextFormField(
-              controller: regionController,
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 labelText: "Region (Optional)",
                 labelStyle: TextStyle(color: Colors.grey),
               ),
+              onSaved: (value) {
+                _region = value!;
+              },
             ),
           ),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
             child: TextFormField(
-              validator: (String? country) {
-                if (country?.isEmpty ?? false) {
-                  return "Country field is required!!";
+              style: const TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
+                labelText: "City",
+                labelStyle: TextStyle(color: Colors.grey),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "City field is required!";
                 }
                 return null;
               },
-              controller: countryController,
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+            child: TextFormField(
+              validator: (String? value) {
+                if (value?.isEmpty ?? false) {
+                  return "sub-city field is required!!";
+                }
+                return null;
+              },
+              onSaved: (value) {
+                _subcity = value!;
+              },
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
-                labelText: "Country",
+                labelText: "Sub City",
                 labelStyle: TextStyle(color: Colors.grey),
               ),
             ),
@@ -642,8 +722,8 @@ class _PropertyPostState extends State<PropertyPost> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            height: 150.0,
-            padding: const EdgeInsets.all(20.0),
+            height: 160.0,
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               children: <Widget>[
                 Center(
@@ -723,6 +803,9 @@ class _PropertyPostState extends State<PropertyPost> {
   }
 
   _submitPropertySellPost() async {
+    setState(() {
+      isUploadingPost = true;
+    });
     if (selected == 0) {
       const snackBar = SnackBar(content: Text("Select property type!!"));
 
@@ -733,6 +816,12 @@ class _PropertyPostState extends State<PropertyPost> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    _formKey.currentState!.save();
+
+    // if (!_formKey.currentState!.validate()) {
+    //   return;
+    // }
 
     // NetworkCheck networkCheck = NetworkCheck();
     // networkCheck.checkInternet((isNetworkPresent) async {
@@ -751,25 +840,25 @@ class _PropertyPostState extends State<PropertyPost> {
 
     try {
       List<String> imagePaths = [];
-      try {
-        if (_imageFilesList.isNotEmpty) {
-          imagePaths = await uploadImage(_imageFilesList);
-          print("imagePaths : $imagePaths");
-          print("imagePaths : ${imagePaths.length}");
-        }
-      } catch (error) {
-        print("uploadError : ${error.toString()}");
-      }
+      // try {
+      //   if (_imageFilesList.isNotEmpty) {
+      //     imagePaths = await uploadImage(_imageFilesList);
+      //     print("imagePaths : $imagePaths");
+      //     print("imagePaths : ${imagePaths.length}");
+      //   }
+      // } catch (error) {
+      //   print("uploadError : ${error.toString()}");
+      // }
 
-      final propertySellReference =
-          FirebaseStorage.instance.ref().child("Property").child("Sell");
+      // final propertySellReference =
+      //     FirebaseStorage.instance.ref().child("Property").child("Sell");
 
-          print("_imageFilesList : ${_imageFilesList.length}");
+      print("_imageFilesList : ${_imageFilesList.length}");
       print("imagePaths : ${imagePaths.length}");
 
       // String resourceID = propertySellReference.push().key ?? "";
 
-      // if (widget.rentModel == null || widget.rentModel?.id == null) {
+      // if (rentModel == null || widget.rentModel.id == null) {
       //   await propertySellReference.child(resourceID).set({
       //     "id": resourceID,
       //     "sellType": selected,
@@ -787,8 +876,8 @@ class _PropertyPostState extends State<PropertyPost> {
       //     "updatedAt": DateTime.now().toIso8601String(),
       //   });
       // } else {
-      //   await propertySellReference.child(widget.rentModel?.id ?? "").update({
-      //     "id": widget.rentModel?.id,
+      //   await propertySellReference.child(rentModel.id ?? "").update({
+      //     "id": rentModel.id,
       //     "sellType": selected,
       //     "images": imagePaths.isNotEmpty ? imagePaths : "",
       //     "sellAddress": addressController.text,
@@ -804,6 +893,26 @@ class _PropertyPostState extends State<PropertyPost> {
       //     "updatedAt": DateTime.now().toIso8601String(),
       //   });
       // }
+      var x = Future.delayed(const Duration(seconds: 3), () {
+        var newModel = PropertyModel(
+          id: "--",
+          images: _imageFilesList,
+          price: _price.toString(),
+          propertyType: PropertyType.house,
+          region: _region,
+          city: _city,
+          subcity: _subcity,
+          //details: {"bedrooms": 1, "bathrooms": 5},
+          details: _detailTextValues,
+          description: _description,
+          contact: _contact,
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+
+        propertyRentList.insert(0, newModel);
+      });
+
+      await x;
 
       setState(() {
         isUploadingPost = false;
@@ -811,10 +920,12 @@ class _PropertyPostState extends State<PropertyPost> {
 
       // var propertyName =
       //     "${bedroomController.text} BHK ${getPropertyTypeById(selected)} is for sale !!";
-      var contact = "Contact : ${contactController.text}";
+      //var contact = "Contact : ${contactController.text}";
       //repeatNotification(propertyName, contact);
 
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } catch (error) {
       print("catch block : $error");
 

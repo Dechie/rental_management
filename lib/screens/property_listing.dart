@@ -27,9 +27,12 @@ class _PropertyListingState extends State<PropertyListing> {
           ? const Center(child: CircularProgressIndicator())
           : _buildPropertyList(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.redAccent,
         onPressed: () {
           try {
-            Navigator.pushNamed(context, PropertyPost.routeName);
+            //Navigator.pushNamed(context, PropertyPost.routeName);
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const PropertyPost()));
           } catch (e) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -67,124 +70,163 @@ class _PropertyListingState extends State<PropertyListing> {
   _buildPropertyInfo(PropertyModel rentModel) {
     List<Widget> subWidgets = [];
 
-    switch (rentModel.propertyType) {
-      case PropertyType.house:
-        subWidgets = [
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(
-              "ETB ${rentModel.price}",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
+    //List subSubWidgets =
+    var rrow = Row(
+      children: rentModel.details!.entries
+          .take(2)
+          .map((entry) => Text("${entry.key}: ${entry.value}"))
+          .toList(),
+    );
+    subWidgets = [
+      Padding(
+        padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+        child: Text(
+          "ETB ${rentModel.price}",
+          style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      SizedBox(
+        width: double.infinity,
+        child: rrow,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+        child: Row(
+          children: <Widget>[
+            Icon(
+              Icons.phone,
+              color: Theme.of(context).primaryColor,
             ),
-          ),
-          Padding(
-              padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-              child: Text(
-                  "${rentModel.details!['bedrooms']} Bedrooms, ${rentModel.details!['houseType']}")),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(rentModel.city ?? ""),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Row(
-              children: <Widget>[
-                Icon(
-                  Icons.phone,
-                  color: Theme.of(context).primaryColor,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: Text(rentModel.contact ?? ""),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: Text(rentModel.contact ?? ""),
             ),
-          )
-        ];
-        break;
-      case PropertyType.car:
-        subWidgets = [
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(
-              "ETB ${rentModel.price}",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(
-              "${rentModel.details!['model']}, Mileage ${rentModel.details?['mileage']} km",
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(rentModel.city ?? ""),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Row(
-              children: <Widget>[
-                Icon(
-                  Icons.phone,
-                  color: Theme.of(context).primaryColor,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: Text(rentModel.contact ?? ""),
-                ),
-              ],
-            ),
-          )
-        ];
-        break;
-      case PropertyType.garment:
-        subWidgets = [
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(
-              "ETB ${rentModel.price}",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(
-              "${rentModel.details!['male_or_female']}, ${rentModel.details?['fabric_type']}",
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Text(rentModel.city ?? ""),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-            child: Row(
-              children: <Widget>[
-                Icon(
-                  Icons.phone,
-                  color: Theme.of(context).primaryColor,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: Text(rentModel.contact ?? ""),
-                ),
-              ],
-            ),
-          )
-        ];
-      default:
-        break;
-    }
+          ],
+        ),
+      ),
+    ];
+
+    // switch (rentModel.propertyType) {
+    //   case PropertyType.house:
+    //     subWidgets = [
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(
+    //           "ETB ${rentModel.price}",
+    //           style: TextStyle(
+    //               color: Theme.of(context).primaryColor,
+    //               fontSize: 18.0,
+    //               fontWeight: FontWeight.bold),
+    //         ),
+    //       ),
+    //       Padding(
+    //           padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //           child: Text(
+    //               "${rentModel.details!['bedrooms']} Bedrooms, ${rentModel.details!['houseType']}")),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(rentModel.city ?? ""),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Row(
+    //           children: <Widget>[
+    //             Icon(
+    //               Icons.phone,
+    //               color: Theme.of(context).primaryColor,
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.only(left: 5.0),
+    //               child: Text(rentModel.contact ?? ""),
+    //             ),
+    //           ],
+    //         ),
+    //       )
+    //     ];
+    //     break;
+    //   case PropertyType.car:
+    //     subWidgets = [
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(
+    //           "ETB ${rentModel.price}",
+    //           style: TextStyle(
+    //               color: Theme.of(context).primaryColor,
+    //               fontSize: 18.0,
+    //               fontWeight: FontWeight.bold),
+    //         ),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(
+    //           "${rentModel.details!['model']}, Mileage ${rentModel.details?['mileage']} km",
+    //         ),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(rentModel.city ?? ""),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Row(
+    //           children: <Widget>[
+    //             Icon(
+    //               Icons.phone,
+    //               color: Theme.of(context).primaryColor,
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.only(left: 5.0),
+    //               child: Text(rentModel.contact ?? ""),
+    //             ),
+    //           ],
+    //         ),
+    //       )
+    //     ];
+    //     break;
+    //   case PropertyType.garment:
+    //     subWidgets = [
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(
+    //           "ETB ${rentModel.price}",
+    //           style: TextStyle(
+    //               color: Theme.of(context).primaryColor,
+    //               fontSize: 18.0,
+    //               fontWeight: FontWeight.bold),
+    //         ),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(
+    //           "${rentModel.details!['male_or_female']}, ${rentModel.details?['fabric_type']}",
+    //         ),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Text(rentModel.city ?? ""),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+    //         child: Row(
+    //           children: <Widget>[
+    //             Icon(
+    //               Icons.phone,
+    //               color: Theme.of(context).primaryColor,
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.only(left: 5.0),
+    //               child: Text(rentModel.contact ?? ""),
+    //             ),
+    //           ],
+    //         ),
+    //       )
+    //     ];
+    //   default:
+    //     break;
+    // }
 
     return Stack(
       children: [

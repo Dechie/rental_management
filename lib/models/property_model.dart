@@ -2,7 +2,7 @@ class PropertyModel {
   String? id;
   List<String>? images;
   String? price;
-  String? bathrooms;
+  //String? bathrooms;
   String? region;
   String? city;
   String? subcity;

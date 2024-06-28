@@ -9,7 +9,7 @@ List<PropertyModel> propertyRentList = [
       'https://www.homestratosphere.com/wp-content/uploads/2018/07/green-house-example2018-07-09-at-5.03.11-PM-31-870x579.jpg'
           'house1_img2.jpg',
     ],
-    price: '250,000',
+    price: '250.0',
     region: 'Region A',
     city: 'City X',
     subcity: 'Subcity Y',

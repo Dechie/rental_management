@@ -153,13 +153,25 @@ class _PropertyDetailsState extends State<PropertyDetails> {
   Widget _buildSliverListBody(String postedDate) {
     return SliverList(
       delegate: SliverChildListDelegate([
-        Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: SizedBox(
+        GestureDetector(
+          onTap: () {
+            //_submitPropertySellPost();
+          },
+          child: Container(
+            color: Theme.of(context).primaryColor,
+            padding: const EdgeInsets.only(top: 10.0),
+            margin: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text("Request Rent"),
+            height: 50.0,
+            child: const Center(
+              child: Text(
+                "Request Rent",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                    letterSpacing: 2.0),
+              ),
             ),
           ),
         ),
