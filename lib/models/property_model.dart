@@ -1,5 +1,6 @@
 class PropertyModel {
   String? id;
+  bool? availability;
   List<String>? images;
   String? price;
   //String? bathrooms;
@@ -9,14 +10,17 @@ class PropertyModel {
   String? description;
   String? contact;
   String? updatedAt;
+  String? userId;
 
   PropertyType propertyType;
   Map<String, dynamic>? details;
 
   PropertyModel({
     this.id,
+    this.userId,
     this.propertyType = PropertyType.house,
     this.images,
+    this.availability,
     this.region,
     this.city,
     this.subcity,

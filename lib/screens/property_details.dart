@@ -156,6 +156,9 @@ class _PropertyDetailsState extends State<PropertyDetails> {
         GestureDetector(
           onTap: () {
             //_submitPropertySellPost();
+            setState(() {
+              widget.rentModel.availability == false;
+            });
           },
           child: Container(
             color: Theme.of(context).primaryColor,

@@ -4,10 +4,11 @@ List<PropertyModel> propertyRentList = [
   // House Type
   PropertyModel(
     id: 'house1',
+    availability: true,
     propertyType: PropertyType.house,
     images: [
-      'https://www.homestratosphere.com/wp-content/uploads/2018/07/green-house-example2018-07-09-at-5.03.11-PM-31-870x579.jpg'
-          'house1_img2.jpg',
+      'https://www.homestratosphere.com/wp-content/uploads/2018/07/green-house-example2018-07-09-at-5.03.11-PM-31-870x579.jpg',
+      'house1_img2.jpg',
     ],
     price: '250.0',
     region: 'Region A',
@@ -25,6 +26,7 @@ List<PropertyModel> propertyRentList = [
   // Car Type
   PropertyModel(
     id: 'car1',
+    availability: true,
     propertyType: PropertyType.car,
     images: ['car1_img1.jpg', 'car1_img2.jpg'],
     price: '20,000',
@@ -43,6 +45,7 @@ List<PropertyModel> propertyRentList = [
   // Garment Type
   PropertyModel(
     id: 'garment1',
+    availability: true,
     propertyType: PropertyType.garment,
     images: [
       'garment1_img1.jpg',
@@ -63,6 +66,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'house1',
+    availability: true,
     propertyType: PropertyType.house,
     images: ['house1_img1.jpg', 'house1_img2.jpg'],
     price: '250,000',
@@ -80,6 +84,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'house2',
+    availability: true,
     propertyType: PropertyType.house,
     images: ['house2_img1.jpg', 'house2_img2.jpg'],
     price: '300,000',
@@ -98,6 +103,7 @@ List<PropertyModel> propertyRentList = [
   PropertyModel(
     id: 'house3',
     propertyType: PropertyType.house,
+    availability: true,
     images: ['house3_img1.jpg', 'house3_img2.jpg'],
     price: '350,000',
     region: 'Region C',
@@ -115,6 +121,7 @@ List<PropertyModel> propertyRentList = [
   // Car Type
   PropertyModel(
     id: 'car1',
+    availability: true,
     propertyType: PropertyType.car,
     images: ['car1_img1.jpg', 'car1_img2.jpg'],
     price: '20,000',
@@ -132,6 +139,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'car2',
+    availability: true,
     propertyType: PropertyType.car,
     images: ['car2_img1.jpg', 'car2_img2.jpg'],
     price: '25,000',
@@ -149,6 +157,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'car3',
+    availability: true,
     propertyType: PropertyType.car,
     images: ['car3_img1.jpg', 'car3_img2.jpg'],
     price: '30,000',
@@ -167,6 +176,7 @@ List<PropertyModel> propertyRentList = [
   // Garment Type
   PropertyModel(
     id: 'garment1',
+    availability: true,
     propertyType: PropertyType.garment,
     images: ['garment1_img1.jpg', 'garment1_img2.jpg'],
     price: '50',
@@ -184,6 +194,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'garment2',
+    availability: true,
     propertyType: PropertyType.garment,
     images: ['garment2_img1.jpg', 'garment2_img2.jpg'],
     price: '75',
@@ -201,6 +212,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'garment3',
+    availability: true,
     propertyType: PropertyType.garment,
     images: ['garment3_img1.jpg', 'garment3_img2.jpg'],
     price: '100',
@@ -214,6 +226,72 @@ List<PropertyModel> propertyRentList = [
       'fabric_type': 'Linen',
       'male_or_female': 'Male',
       'size': 'XL',
+    },
+  ),
+];
+
+List<PropertyModel> requestedProps = [
+  // House Type
+  PropertyModel(
+    id: 'house1',
+    availability: true,
+    propertyType: PropertyType.house,
+    images: [
+      'https://www.homestratosphere.com/wp-content/uploads/2018/07/green-house-example2018-07-09-at-5.03.11-PM-31-870x579.jpg',
+      'house1_img2.jpg',
+    ],
+    price: '250.0',
+    region: 'Region A',
+    city: 'City X',
+    subcity: 'Subcity Y',
+    description: 'Beautiful house with a nice view.',
+    contact: '123-456-7890',
+    updatedAt: '2024-06-01',
+    details: {
+      'bedrooms': 3,
+      'bathrooms': 2,
+      'balconies': 2,
+    },
+  ),
+  // Car Type
+  PropertyModel(
+    id: 'car1',
+    availability: true,
+    propertyType: PropertyType.car,
+    images: ['car1_img1.jpg', 'car1_img2.jpg'],
+    price: '20,000',
+    region: 'Region B',
+    city: 'Addis Ababa',
+    subcity: 'Subcity Z',
+    description: 'Sleek car with modern features.',
+    contact: '234-567-8901',
+    updatedAt: '2024-06-02',
+    details: {
+      'model': 'Model S',
+      'mileage': '15000',
+      'fuel_capacity': '75L',
+    },
+  ),
+  // Garment Type
+  PropertyModel(
+    id: 'garment1',
+    availability: true,
+    propertyType: PropertyType.garment,
+    images: [
+      'garment1_img1.jpg',
+      'garment1_img2.jpg',
+    ],
+    price: '50',
+    region: 'Region C',
+    city: 'Addis Ababa',
+    subcity: 'Subcity A',
+    description: 'Stylish garment made of high-quality fabric.',
+    contact: '345-678-9012',
+    updatedAt: '2024-06-03',
+    details: {
+      'fabric_type': 'Cotton',
+      'male_or_female': 'Male',
+      'size': 'L',
     },
   ),
 ];

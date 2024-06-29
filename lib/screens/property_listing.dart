@@ -18,29 +18,48 @@ class _PropertyListingState extends State<PropertyListing> {
   bool isFetching = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text("Property Listing"),
-      ),
-      body: isFetching
-          ? const Center(child: CircularProgressIndicator())
-          : _buildPropertyList(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.redAccent,
-        onPressed: () {
-          try {
-            //Navigator.pushNamed(context, PropertyPost.routeName);
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const PropertyPost()));
-          } catch (e) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(e.toString())));
-          }
-        },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Colors.red,
+          title: const Text("Property Listing"),
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(Icons.list),
+                text: "Properties",
+              ),
+              Tab(
+                icon: Icon(Icons.request_page),
+                text: "Requests",
+              )
+            ],
+          ),
+        ),
+        body: TabBarView(children: [
+          isFetching
+              ? const Center(child: CircularProgressIndicator())
+              : _buildPropertyList(),
+          _buildRequestedList(),
+        ]),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.redAccent,
+          onPressed: () {
+            try {
+              //Navigator.pushNamed(context, PropertyPost.routeName);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const PropertyPost()));
+            } catch (e) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(e.toString())));
+            }
+          },
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -49,7 +68,7 @@ class _PropertyListingState extends State<PropertyListing> {
   @override
   void initState() {
     super.initState();
-    _fetchRentPropertyData();
+    _fetchPropertyList();
   }
 
   Widget _buildImage(PropertyModel rentModel) {
@@ -108,125 +127,6 @@ class _PropertyListingState extends State<PropertyListing> {
         ),
       ),
     ];
-
-    // switch (rentModel.propertyType) {
-    //   case PropertyType.house:
-    //     subWidgets = [
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(
-    //           "ETB ${rentModel.price}",
-    //           style: TextStyle(
-    //               color: Theme.of(context).primaryColor,
-    //               fontSize: 18.0,
-    //               fontWeight: FontWeight.bold),
-    //         ),
-    //       ),
-    //       Padding(
-    //           padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //           child: Text(
-    //               "${rentModel.details!['bedrooms']} Bedrooms, ${rentModel.details!['houseType']}")),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(rentModel.city ?? ""),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Row(
-    //           children: <Widget>[
-    //             Icon(
-    //               Icons.phone,
-    //               color: Theme.of(context).primaryColor,
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.only(left: 5.0),
-    //               child: Text(rentModel.contact ?? ""),
-    //             ),
-    //           ],
-    //         ),
-    //       )
-    //     ];
-    //     break;
-    //   case PropertyType.car:
-    //     subWidgets = [
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(
-    //           "ETB ${rentModel.price}",
-    //           style: TextStyle(
-    //               color: Theme.of(context).primaryColor,
-    //               fontSize: 18.0,
-    //               fontWeight: FontWeight.bold),
-    //         ),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(
-    //           "${rentModel.details!['model']}, Mileage ${rentModel.details?['mileage']} km",
-    //         ),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(rentModel.city ?? ""),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Row(
-    //           children: <Widget>[
-    //             Icon(
-    //               Icons.phone,
-    //               color: Theme.of(context).primaryColor,
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.only(left: 5.0),
-    //               child: Text(rentModel.contact ?? ""),
-    //             ),
-    //           ],
-    //         ),
-    //       )
-    //     ];
-    //     break;
-    //   case PropertyType.garment:
-    //     subWidgets = [
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(
-    //           "ETB ${rentModel.price}",
-    //           style: TextStyle(
-    //               color: Theme.of(context).primaryColor,
-    //               fontSize: 18.0,
-    //               fontWeight: FontWeight.bold),
-    //         ),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(
-    //           "${rentModel.details!['male_or_female']}, ${rentModel.details?['fabric_type']}",
-    //         ),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Text(rentModel.city ?? ""),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
-    //         child: Row(
-    //           children: <Widget>[
-    //             Icon(
-    //               Icons.phone,
-    //               color: Theme.of(context).primaryColor,
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.only(left: 5.0),
-    //               child: Text(rentModel.contact ?? ""),
-    //             ),
-    //           ],
-    //         ),
-    //       )
-    //     ];
-    //   default:
-    //     break;
-    // }
 
     return Stack(
       children: [
@@ -306,5 +206,138 @@ class _PropertyListingState extends State<PropertyListing> {
     );
   }
 
-  _fetchRentPropertyData() {}
+  _buildRequestedList() {
+    if (requestedProps.isEmpty) {
+      return const Center(
+        child: Text(
+          "No data found!!",
+          style: TextStyle(fontSize: 20),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+      itemCount: requestedProps.length,
+      itemBuilder: (BuildContext context, int index) {
+        var rentModel = requestedProps[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PropertyDetails(
+                  rentModel: rentModel,
+                ),
+              ),
+            );
+          },
+          child: Card(
+            margin: const EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+            elevation: 5,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
+            child: SizedBox(
+              height: 120,
+              child: Row(
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      bottomLeft: Radius.circular(10.0),
+                    ),
+                    child: _buildImage(rentModel),
+                  ),
+                  Expanded(
+                    child: _buildRequestedPropertyInfo(rentModel),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => const SizedBox(height: 20),
+    );
+  }
+
+  _buildRequestedPropertyInfo(PropertyModel rentModel) {
+    List<Widget> subWidgets = [];
+
+    //List subSubWidgets =
+    var rrow = Padding(
+      padding: const EdgeInsets.only(left: 5.0),
+      child: Row(
+        children: rentModel.details!.entries
+            .take(2)
+            .map((entry) => Text("${entry.key}: ${entry.value}"))
+            .toList(),
+      ),
+    );
+    subWidgets = [
+      Padding(
+        padding: const EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0),
+        child: Text(
+          "ETB ${rentModel.price}",
+          style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      SizedBox(
+        width: double.infinity,
+        child: rrow,
+      ),
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Row(
+          children: <Widget>[
+            FilledButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.greenAccent),
+              ),
+              onPressed: () {},
+              child: const Text("Approve"),
+            ),
+            const SizedBox(width: 10),
+            FilledButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.redAccent),
+              ),
+              onPressed: () {},
+              child: const Text("Decline"),
+            ),
+          ],
+        ),
+      ),
+    ];
+
+    return Stack(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: subWidgets,
+        ),
+        Positioned(
+          right: 0.0,
+          top: 0.0,
+          child: IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.favorite_border,
+              color: Colors.red,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _fetchPropertyList() {
+    propertyRentList =
+        propertyRentList.where((prop) => prop.availability == true).toList();
+  }
 }

@@ -896,6 +896,8 @@ class _PropertyPostState extends State<PropertyPost> {
       var x = Future.delayed(const Duration(seconds: 3), () {
         var newModel = PropertyModel(
           id: "--",
+          userId: "1",
+          availability: true,
           images: _imageFilesList,
           price: _price.toString(),
           propertyType: PropertyType.house,
