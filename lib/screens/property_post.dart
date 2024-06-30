@@ -314,63 +314,6 @@ class _PropertyPostState extends State<PropertyPost> {
     );
   }
 
-  // Widget _buildPropertyDetailsWidget() {
-  //   return Container(
-  //     color: Colors.white,
-  //     padding: const EdgeInsets.symmetric(vertical: 10.0),
-  //     margin: const EdgeInsets.only(top: 10.0),
-  //     child: Column(
-  //       children: <Widget>[
-  //         Padding(
-  //           padding:
-  //               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-  //           child: TextFormField(
-  //             validator: (String? bedrooms) {
-  //               if (bedrooms?.isEmpty ?? false) {
-  //                 return "Bedroom field is required!!";
-  //               }
-  //               return null;
-  //             },
-  //             controller: bedroomController,
-  //             keyboardType: TextInputType.number,
-  //             style: const TextStyle(color: Colors.black),
-  //             decoration: const InputDecoration(
-  //               labelText: "BedRoom(s)",
-  //               labelStyle: TextStyle(color: Colors.grey),
-  //             ),
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding:
-  //               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-  //           child: TextFormField(
-  //             controller: bathroomController,
-  //             keyboardType: TextInputType.number,
-  //             style: const TextStyle(color: Colors.black),
-  //             decoration: const InputDecoration(
-  //               labelText: "BathRoom(s)",
-  //               labelStyle: TextStyle(color: Colors.grey),
-  //             ),
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding:
-  //               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-  //           child: TextFormField(
-  //             controller: balconyController,
-  //             keyboardType: TextInputType.number,
-  //             style: const TextStyle(color: Colors.black),
-  //             decoration: const InputDecoration(
-  //               labelText: "No. of Balconies",
-  //               labelStyle: TextStyle(color: Colors.grey),
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildPropertyLocationWidget() {
     return Container(
       color: Colors.white,
@@ -378,27 +321,6 @@ class _PropertyPostState extends State<PropertyPost> {
       margin: const EdgeInsets.only(top: 10.0),
       child: Column(
         children: <Widget>[
-          // GestureDetector(
-          //   onTap: () {
-          //     _getLocation();
-          //   },
-          //   child: Row(
-          //     children: <Widget>[
-          //       Padding(
-          //         padding: const EdgeInsets.only(left: 20.0, right: 10.0),
-          //         child: Icon(
-          //           Icons.my_location,
-          //           color: Theme.of(context).primaryColor,
-          //         ),
-          //       ),
-          //       const Padding(
-          //         padding: EdgeInsets.only(left: 10.0, right: 20.0),
-          //         child: Text("Detect Property Location"),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
@@ -505,12 +427,7 @@ class _PropertyPostState extends State<PropertyPost> {
                                         _imageFilesList[index])
                                     ? fetchImageWithPlaceHolderWithDims(
                                         80.0, 80.0, _imageFilesList[index])
-                                    /*Image.network(
-                                        _imageFilesList[index],
-                                        fit: BoxFit.cover,
-                                        height: 80.0,
-                                        width: 80.0,
-                                      )*/
+                                    
                                     : Image.file(
                                         File(_imageFilesList[index]),
                                         fit: BoxFit.cover,
@@ -673,50 +590,6 @@ class _PropertyPostState extends State<PropertyPost> {
     });
   }
 
-  _getLocation() async {
-    // try {
-    //   Geolocator geolocator = Geolocator();
-    //   Position currentLocation = await Geolocator.getCurrentPosition(
-    //       desiredAccuracy: LocationAccuracy.best);
-    //   final placemark = await placemarkFromCoordinates(
-    //       currentLocation.latitude, currentLocation.longitude);
-
-    //   print("country : ${placemark[0].country}");
-    //   print("position : ${placemark[0]}");
-    //   print("locality : ${placemark[0].locality}");
-    //   print("administrativeArea : ${placemark[0].administrativeArea}");
-    //   print("postalCode : ${placemark[0].postalCode}");
-    //   print("name : ${placemark[0].name}");
-    //   print("subAdministrativeArea : ${placemark[0].subAdministrativeArea}");
-    //   print("isoCountryCode : ${placemark[0].isoCountryCode}");
-    //   print("subLocality : ${placemark[0].subLocality}");
-    //   print("subThoroughfare : ${placemark[0].subThoroughfare}");
-    //   print("thoroughfare : ${placemark[0].thoroughfare}");
-
-    //   if (placemark[0].country?.isNotEmpty ?? true) {
-    //     countryController.text = placemark[0].country ?? "";
-    //   }
-
-    //   if (placemark[0].administrativeArea?.isNotEmpty ?? true) {
-    //     regionController.text = placemark[0].administrativeArea ?? "";
-    //   }
-
-    //   if (placemark[0].subAdministrativeArea?.isNotEmpty ?? true) {
-    //     cityController.text = placemark[0].subAdministrativeArea ?? "";
-    //   }
-
-    //   if (placemark[0].name?.isNotEmpty ?? true) {
-    //     addressController.text = placemark[0].name ?? "";
-    //   }
-
-    //   setState(() {});
-    // } on PlatformException catch (error) {
-    //   print(error.message);
-    // } catch (error) {
-    //   print("Error: $error");
-    // }
-  }
-
   void _openImagePicker(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -819,25 +692,6 @@ class _PropertyPostState extends State<PropertyPost> {
 
     _formKey.currentState!.save();
 
-    // if (!_formKey.currentState!.validate()) {
-    //   return;
-    // }
-
-    // NetworkCheck networkCheck = NetworkCheck();
-    // networkCheck.checkInternet((isNetworkPresent) async {
-    //   if (!isNetworkPresent) {
-    //     const snackBar =
-    //         SnackBar(content: Text("Please check your internet connection !!"));
-
-    //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    //     return;
-    //   } else {
-    //     setState(() {
-    //       isUploadingPost = true;
-    //     });
-    //   }
-    // });
-
     try {
       List<String> imagePaths = [];
       // try {
@@ -856,6 +710,7 @@ class _PropertyPostState extends State<PropertyPost> {
       print("_imageFilesList : ${_imageFilesList.length}");
       print("imagePaths : ${imagePaths.length}");
 
+      // TODO: These lines below are for firebase posting.
       // String resourceID = propertySellReference.push().key ?? "";
 
       // if (rentModel == null || widget.rentModel.id == null) {
@@ -900,7 +755,6 @@ class _PropertyPostState extends State<PropertyPost> {
           availability: true,
           images: _imageFilesList,
           price: _price.toString(),
-          propertyType: PropertyType.house,
           region: _region,
           city: _city,
           subcity: _subcity,
@@ -919,11 +773,6 @@ class _PropertyPostState extends State<PropertyPost> {
       setState(() {
         isUploadingPost = false;
       });
-
-      // var propertyName =
-      //     "${bedroomController.text} BHK ${getPropertyTypeById(selected)} is for sale !!";
-      //var contact = "Contact : ${contactController.text}";
-      //repeatNotification(propertyName, contact);
 
       if (mounted) {
         Navigator.of(context).pop();

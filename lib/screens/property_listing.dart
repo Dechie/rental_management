@@ -24,8 +24,12 @@ class _PropertyListingState extends State<PropertyListing> {
         key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
           title: const Text("Property Listing"),
           bottom: const TabBar(
+            labelColor: Colors.white,
+            indicatorColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
             tabs: [
               Tab(
                 icon: Icon(Icons.list),
@@ -128,25 +132,10 @@ class _PropertyListingState extends State<PropertyListing> {
       ),
     ];
 
-    return Stack(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: subWidgets,
-        ),
-        Positioned(
-          right: 0.0,
-          top: 0.0,
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.favorite_border,
-              color: Colors.red,
-            ),
-          ),
-        ),
-      ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: subWidgets,
     );
   }
 
@@ -314,25 +303,10 @@ class _PropertyListingState extends State<PropertyListing> {
       ),
     ];
 
-    return Stack(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: subWidgets,
-        ),
-        Positioned(
-          right: 0.0,
-          top: 0.0,
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.favorite_border,
-              color: Colors.red,
-            ),
-          ),
-        ),
-      ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: subWidgets,
     );
   }
 

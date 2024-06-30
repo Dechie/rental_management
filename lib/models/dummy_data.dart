@@ -4,8 +4,8 @@ List<PropertyModel> propertyRentList = [
   // House Type
   PropertyModel(
     id: 'house1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.house,
     images: [
       'https://www.homestratosphere.com/wp-content/uploads/2018/07/green-house-example2018-07-09-at-5.03.11-PM-31-870x579.jpg',
       'house1_img2.jpg',
@@ -26,8 +26,8 @@ List<PropertyModel> propertyRentList = [
   // Car Type
   PropertyModel(
     id: 'car1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.car,
     images: ['car1_img1.jpg', 'car1_img2.jpg'],
     price: '20,000',
     region: 'Region B',
@@ -45,8 +45,8 @@ List<PropertyModel> propertyRentList = [
   // Garment Type
   PropertyModel(
     id: 'garment1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.garment,
     images: [
       'garment1_img1.jpg',
       'garment1_img2.jpg',
@@ -66,8 +66,8 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'house1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.house,
     images: ['house1_img1.jpg', 'house1_img2.jpg'],
     price: '250,000',
     region: 'Region A',
@@ -84,8 +84,8 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'house2',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.house,
     images: ['house2_img1.jpg', 'house2_img2.jpg'],
     price: '300,000',
     region: 'Region B',
@@ -102,7 +102,7 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'house3',
-    propertyType: PropertyType.house,
+    userId: '1',
     availability: true,
     images: ['house3_img1.jpg', 'house3_img2.jpg'],
     price: '350,000',
@@ -121,8 +121,8 @@ List<PropertyModel> propertyRentList = [
   // Car Type
   PropertyModel(
     id: 'car1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.car,
     images: ['car1_img1.jpg', 'car1_img2.jpg'],
     price: '20,000',
     region: 'Region A',
@@ -139,8 +139,8 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'car2',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.car,
     images: ['car2_img1.jpg', 'car2_img2.jpg'],
     price: '25,000',
     region: 'Region B',
@@ -157,8 +157,8 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'car3',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.car,
     images: ['car3_img1.jpg', 'car3_img2.jpg'],
     price: '30,000',
     region: 'Region C',
@@ -176,8 +176,8 @@ List<PropertyModel> propertyRentList = [
   // Garment Type
   PropertyModel(
     id: 'garment1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.garment,
     images: ['garment1_img1.jpg', 'garment1_img2.jpg'],
     price: '50',
     region: 'Region A',
@@ -194,8 +194,8 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'garment2',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.garment,
     images: ['garment2_img1.jpg', 'garment2_img2.jpg'],
     price: '75',
     region: 'Region B',
@@ -212,8 +212,8 @@ List<PropertyModel> propertyRentList = [
   ),
   PropertyModel(
     id: 'garment3',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.garment,
     images: ['garment3_img1.jpg', 'garment3_img2.jpg'],
     price: '100',
     region: 'Region C',
@@ -234,8 +234,8 @@ List<PropertyModel> requestedProps = [
   // House Type
   PropertyModel(
     id: 'house1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.house,
     images: [
       'https://www.homestratosphere.com/wp-content/uploads/2018/07/green-house-example2018-07-09-at-5.03.11-PM-31-870x579.jpg',
       'house1_img2.jpg',
@@ -256,8 +256,8 @@ List<PropertyModel> requestedProps = [
   // Car Type
   PropertyModel(
     id: 'car1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.car,
     images: ['car1_img1.jpg', 'car1_img2.jpg'],
     price: '20,000',
     region: 'Region B',
@@ -275,8 +275,8 @@ List<PropertyModel> requestedProps = [
   // Garment Type
   PropertyModel(
     id: 'garment1',
+    userId: '1',
     availability: true,
-    propertyType: PropertyType.garment,
     images: [
       'garment1_img1.jpg',
       'garment1_img2.jpg',

@@ -3,7 +3,6 @@ class PropertyModel {
   bool? availability;
   List<String>? images;
   String? price;
-  //String? bathrooms;
   String? region;
   String? city;
   String? subcity;
@@ -12,13 +11,11 @@ class PropertyModel {
   String? updatedAt;
   String? userId;
 
-  PropertyType propertyType;
   Map<String, dynamic>? details;
 
   PropertyModel({
     this.id,
     this.userId,
-    this.propertyType = PropertyType.house,
     this.images,
     this.availability,
     this.region,
@@ -42,14 +39,9 @@ class PropertyModel {
       images = [];
     }
 
-    switch (value['propertyType']) {
-      case PropertyType.car:
-    }
-
     return PropertyModel(
       id: value["id"],
       images: images as List<String>,
-      propertyType: value["propertyType"],
       price: value["price"],
       details: value['details'],
       region: value['region'],
@@ -61,5 +53,3 @@ class PropertyModel {
     );
   }
 }
-
-enum PropertyType { car, house, garment }
